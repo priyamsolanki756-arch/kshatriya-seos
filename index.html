@@ -3,40 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSHATRIYA SEOS // CORE</title>
+    <title>KSHATRIYA SEOS // TERMINAL</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0d0d11; color: #e2e8f0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { background: linear-gradient(90deg, #1e1b4b, #0f172a); padding: 18px; text-align: center; border-bottom: 2px solid #312e81; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        header h1 { font-size: 1.6rem; letter-spacing: 3px; color: #6366f1; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(99,102,241,0.5); }
-        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: radial-gradient(circle at center, #111827 0%, #090d16 100%); }
-        .message { max-width: 85%; padding: 14px 18px; border-radius: 12px; line-height: 1.5; font-size: 0.95rem; white-space: pre-wrap; animation: fadeIn 0.3s ease-in-out; }
-        .user-message { background-color: #312e81; color: #f8fafc; align-self: flex-end; border-bottom-right-radius: 2px; border: 1px solid #4338ca; }
-        .ai-message { background-color: #1f2937; color: #f1f5f9; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #374151; }
-        .ai-message bold, .ai-message strong { color: #818cf8; font-weight: 700; }
-        #input-container { background-color: #111827; padding: 15px; border-top: 2px solid #1f2937; display: flex; gap: 12px; }
-        textarea { flex: 1; background-color: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px; color: #fff; resize: none; height: 48px; font-size: 0.95rem; outline: none; transition: border 0.2s; }
-        textarea:focus { border-color: #6366f1; box-shadow: 0 0 8px rgba(99,102,241,0.3); }
-        button { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; border: none; border-radius: 8px; width: 80px; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
-        button:hover { opacity: 0.9; }
-        button:active { transform: scale(0.96); }
-        button:disabled { background: #374151; cursor: not-allowed; opacity: 0.6; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        :root {
+            --bg-main: #060608;
+            --bg-panel: #0b0c10;
+            --accent-glow: #6366f1;
+            --accent-border: #1e1b4b;
+            --text-core: #e2e8f0;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-core);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Premium Header Accent */
+        header {
+            background: linear-gradient(180deg, #0f111a 0%, #060608 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #1e293b;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            letter-spacing: 5px;
+            color: var(--text-core);
+            text-transform: uppercase;
+            font-weight: 900;
+            text-shadow: 0 0 15px rgba(226, 232, 240, 0.2);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+        }
+
+        /* Chat Arena Grid */
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #07070a;
+        }
+
+        /* Message Geometry */
+        .message {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 4px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            position: relative;
+            animation: glitchIn 0.25s ease-out;
+        }
+
+        .user-message {
+            background-color: #0f1016;
+            color: #ffffff;
+            align-self: flex-end;
+            border-left: 3px solid var(--accent-glow);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.05);
+        }
+
+        .ai-message {
+            background-color: #0b0c10;
+            color: #cbd5e1;
+            align-self: flex-start;
+            border-left: 3px solid #334155;
+            border: 1px solid #1e293b;
+        }
+
+        .ai-message strong {
+            color: #5ff4a4;
+            font-weight: 700;
+        }
+
+        /* Execution Control Dock */
+        #input-container {
+            background-color: #090a0f;
+            padding: 20px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        textarea {
+            flex: 1;
+            background-color: #040406;
+            border: 1px solid #1e293b;
+            border-radius: 4px;
+            padding: 15px;
+            color: #fff;
+            resize: none;
+            height: 54px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        textarea:focus {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+        }
+
+        button {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 4px;
+            height: 54px;
+            width: 100px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: var(--accent-glow);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        button:disabled {
+            background: #1e293b;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        @keyframes glitchIn {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Kshatriya SEOS Core</h1>
+        <h1>[ KSHATRIYA SEOS // CORE v3.0 ]</h1>
     </header>
 
     <div id="chat-container">
-        <div class="message ai-message"><strong>[SYSTEM INITIALIZED]</strong> Core engine online. State your target, define your battlefield. Execution parameter locked.</div>
+        <div class="message ai-message"><strong>[SYSTEM ACTIVE]</strong> Pipeline clear. Awaiting high-value tactical execution inputs.</div>
     </div>
 
     <div id="input-container">
-        <textarea id="user-input" placeholder="Enter execution prompt..."></textarea>
-        <button id="send-btn">RUN</button>
+        <textarea id="user-input" placeholder="// ENTER STRATEGY COMMAND..."></textarea>
+        <button id="send-btn">EXEC</button>
     </div>
 
     <script>
@@ -44,14 +188,13 @@
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
 
-        // Cloudflare Worker Live API Endpoint
+        // Cloudflare Active Bridge Route
         const API_URL = 'https://kshatriya-ai-bridge.solankipriyam71.workers.dev';
 
-        // Static Execution Profile Matrix Context
-        const userContext = {
-            profile: "Kshatriya Elite",
-            focus: ["High-Ticket Freelance", "Premium Video Editing Pipelines", "Mass Scale PW Distribution Loops"],
-            rules: "Zero corporate fluff. Absolute tactical blueprints only."
+        const systemContext = {
+            matrix: "Elite Blueprint Generation",
+            archetypes: ["Sukuna", "Shelby", "Musk"],
+            demographic: "High-Tier Monetization Network"
         };
 
         function appendMessage(text, isUser) {
@@ -66,41 +209,37 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            appendMessage(text, true);
+            appendMessage(`> ${text}`, true);
             userInput.value = '';
-            userInput.style.height = '48px';
-            
             sendBtn.disabled = true;
             
-            // Temporary typing notification
-            const loaderDiv = document.createElement('div');
-            loaderDiv.className = 'message ai-message';
-            loaderDiv.innerText = '[COMPUTING PIPELINE...]';
-            chatContainer.appendChild(loaderDiv);
+            const loader = document.createElement('div');
+            loader.className = 'message ai-message';
+            loader.innerText = '[PROCESSING ENGINE PARSING...]';
+            chatContainer.appendChild(loader);
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, context: userContext })
+                    body: JSON.stringify({ prompt: text, context: systemContext })
                 });
 
                 const data = await response.json();
-                loaderDiv.remove();
+                loader.remove();
 
                 if (data.reply) {
-                    // Convert basic markdown asterisks to html bold tags safely
-                    let formattedReply = data.reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    appendMessage(formattedReply, false);
+                    let formatted = data.reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    appendMessage(formatted, false);
                 } else if (data.error) {
-                    appendMessage(`[CORE ERROR]: ${data.error}`, false);
+                    appendMessage(`<strong>[ENGINE REJECTION]</strong>: ${data.error}<br><br><em>Check if GEMINI_API_KEY is properly saved in Cloudflare -> Settings -> Variables.</em>`, false);
                 } else {
-                    appendMessage('[UNEXPECTED RESPONSE STRUCT ERROR]', false);
+                    appendMessage('<strong>[EXCEPTION]</strong>: Empty Token Stream.', false);
                 }
             } catch (err) {
-                loaderDiv.remove();
-                appendMessage(`[NETWORK CORE FAILURE]: ${err.message}`, false);
+                loader.remove();
+                appendMessage(`<strong>[NETWORK EXCEPTION]</strong>: Server refused request payload. Check CORS or URL endpoint.`, false);
             } finally {
                 sendBtn.disabled = false;
             }
