@@ -3,177 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSHATRIYA SEOS // OPERATIONAL OPERATING SYSTEM</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>KSHATRIYA SEOS // CORE</title>
     <style>
-        :root {
-            --background: #050505;
-            --panel-muted: #0F0F0F;
-            --border-accent: #1A1A1A;
-            --text-core: #E6E6E6;
-            --text-muted: #737373;
-            --alert-core: #FFAB00;
-            --velocity-signal: #00FF41;
-        }
-        body {
-            background-color: var(--background);
-            color: var(--text-core);
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            letter-spacing: -0.011em;
-        }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .hidden-layer { display: none !important; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0d11; color: #e2e8f0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { background: linear-gradient(90deg, #1e1b4b, #0f172a); padding: 18px; text-align: center; border-bottom: 2px solid #312e81; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        header h1 { font-size: 1.6rem; letter-spacing: 3px; color: #6366f1; text-transform: uppercase; font-weight: 800; text-shadow: 0 0 10px rgba(99,102,241,0.5); }
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: radial-gradient(circle at center, #111827 0%, #090d16 100%); }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 12px; line-height: 1.5; font-size: 0.95rem; white-space: pre-wrap; animation: fadeIn 0.3s ease-in-out; }
+        .user-message { background-color: #312e81; color: #f8fafc; align-self: flex-end; border-bottom-right-radius: 2px; border: 1px solid #4338ca; }
+        .ai-message { background-color: #1f2937; color: #f1f5f9; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #374151; }
+        .ai-message bold, .ai-message strong { color: #818cf8; font-weight: 700; }
+        #input-container { background-color: #111827; padding: 15px; border-top: 2px solid #1f2937; display: flex; gap: 12px; }
+        textarea { flex: 1; background-color: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px; color: #fff; resize: none; height: 48px; font-size: 0.95rem; outline: none; transition: border 0.2s; }
+        textarea:focus { border-color: #6366f1; box-shadow: 0 0 8px rgba(99,102,241,0.3); }
+        button { background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; border: none; border-radius: 8px; width: 80px; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.96); }
+        button:disabled { background: #374151; cursor: not-allowed; opacity: 0.6; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="w-screen h-screen flex flex-col antialiased select-none bg-[#050505]">
+<body>
 
-    <div id="onboarding-gate" class="w-full h-full flex flex-col items-center justify-center p-6 bg-[#050505]">
-        <div class="max-w-lg w-full border border-[#1A1A1A] bg-[#0F0F0F] p-8 rounded-[2px] space-y-6 relative overflow-hidden">
-            <div class="absolute top-0 left-0 h-[2px] bg-[#FFAB00] transition-all duration-500" id="progress-bar" style="width: 20%;"></div>
-            <div class="flex justify-between items-center mono text-[10px] text-[#737373] border-b border-[#1A1A1A] pb-4">
-                <span class="text-[#FFAB00] font-bold tracking-wider">// INITIAL DIAGNOSTIC CALIBRATION</span>
-                <span id="stage-counter">STAGE 1 / 5</span>
-            </div>
-            <div class="space-y-4" id="question-container"></div>
-            <div class="flex justify-between items-center pt-4 border-t border-[#1A1A1A] mono text-[11px]">
-                <span class="text-[#737373] text-[10px]">[INPUT SENSORS ACTIVE]</span>
-                <button id="next-stage-btn" class="px-5 py-2 border border-[#1A1A1A] bg-[#050505] hover:border-[#E6E6E6] text-[#E6E6E6] transition-all duration-150 rounded-[2px] font-bold tracking-tight">
-                    NEXT VECTOR >
-                </button>
-            </div>
-        </div>
+    <header>
+        <h1>Kshatriya SEOS Core</h1>
+    </header>
+
+    <div id="chat-container">
+        <div class="message ai-message"><strong>[SYSTEM INITIALIZED]</strong> Core engine online. State your target, define your battlefield. Execution parameter locked.</div>
     </div>
 
-    <div id="dashboard-core" class="w-full h-full flex flex-col hidden-layer">
-        <header class="w-full h-11 border-b border-[#1A1A1A] bg-[#050505] px-6 flex items-center justify-between mono text-[11px] text-[#737373]">
-            <div class="flex items-center space-x-4">
-                <span class="text-[#E6E6E6] font-bold tracking-tight">KSHATRIYA SEOS v3.5</span>
-                <span class="text-[#00FF41] flex items-center space-x-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#00FF41] animate-pulse"></span>
-                    <span>SYSTEM: RECALIBRATED</span>
-                </span>
-            </div>
-            <div class="flex items-center space-x-6">
-                <span>MONETIZATION TRACKER: <span class="text-[#00FF41] font-bold" id="hud-earning-index">CALIBRATING...</span></span>
-            </div>
-        </header>
-
-        <div class="w-full flex flex-1 overflow-hidden">
-            <nav class="w-[22%] border-r border-[#1A1A1A] bg-[#050505] p-5 flex flex-col justify-between mono text-[11px] text-[#737373]">
-                <div class="space-y-6">
-                    <div class="text-[#E6E6E6] text-[10px] uppercase tracking-wider font-bold">OPERATIONAL CORE</div>
-                    <div class="space-y-1">
-                        <div class="text-[#E6E6E6] bg-[#0F0F0F] p-2.5 rounded-[2px] border border-[#1A1A1A] font-medium flex items-center justify-between">
-                            <span>> EARNING COACH</span>
-                            <span class="text-[9px] bg-[#1A1A1A] px-1.5 py-0.5 rounded text-[#00FF41]">ACTIVE</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-t border-[#1A1A1A] pt-4 text-[10px] space-y-2 leading-relaxed">
-                    <div class="flex justify-between"><span>SECURE VAULT</span><span class="text-[#E6E6E6]">LOCAL_AES256</span></div>
-                </div>
-            </nav>
-
-            <main class="w-[48%] flex flex-col justify-between bg-[#050505] border-r border-[#1A1A1A] relative">
-                <div id="stream-container" class="flex-1 p-6 overflow-y-auto space-y-6 no-scrollbar">
-                    <div class="flex justify-start">
-                        <div class="max-w-[95%] p-5 rounded-[2px] bg-[#0F0F0F]/30 border border-[#1A1A1A]/50 space-y-2.5">
-                            <span class="mono text-[10px] uppercase tracking-wider text-[#FFAB00] block font-bold">// COACH ARCHITECT</span>
-                            <p class="leading-relaxed text-[13px] text-[#E6E6E6]" id="welcome-message-text">Analyzing monetization profiles...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4 border-t border-[#1A1A1A] bg-[#050505]">
-                    <div class="relative flex items-center bg-[#0F0F0F] border border-[#1A1A1A] rounded-[2px] px-3.5 focus-within:border-[#737373] transition-all duration-150">
-                        <span class="mono text-xs text-[#737373] mr-2.5 font-bold">></span>
-                        <input type="text" id="terminal-input" class="w-full h-11 bg-transparent text-sm text-[#E6E6E6] mono focus:outline-none placeholder-[#737373]" placeholder="Ask Coach for execution directives or log assets...">
-                    </div>
-                </div>
-            </main>
-
-            <aside class="w-[30%] bg-[#050505] p-5 flex flex-col space-y-5 mono text-[11px] text-[#737373]">
-                <div class="border border-[#1A1A1A] bg-[#0F0F0F] rounded-[2px] p-4 flex flex-col h-48 justify-between">
-                    <div class="text-[10px] text-[#E6E6E6] uppercase tracking-wider font-bold">TRAJECTORY ALIGNMENT MATRIX</div>
-                    <div class="flex-1 flex items-center justify-center py-4">
-                        <pre class="text-[11px] tracking-widest leading-none font-bold text-[#00FF41]">
-      /\
-     /  \
-    /    \
-   /  •   \
-  /________\</pre>
-                    </div>
-                </div>
-
-                <div class="border border-[#1A1A1A] bg-[#0F0F0F] rounded-[2px] p-4 space-y-3.5">
-                    <div class="text-[10px] text-[#E6E6E6] uppercase tracking-wider font-bold mb-1">MONETIZATION CONSOLE</div>
-                    <div class="flex justify-between border-b border-[#1A1A1A]/60 pb-2.5"><span>TARGET EARNING</span><span class="text-[#E6E6E6] font-bold">1 Lakh / Mo Target</span></div>
-                    <div class="flex justify-between border-b border-[#1A1A1A]/60 pb-2.5"><span>CORE SKILL ASSET</span><span id="hud-skill-display" class="text-[#FFAB00] font-bold">CALIBRATING</span></div>
-                    <div class="flex justify-between border-b border-[#1A1A1A]/60 pb-2.5"><span>DAILY RUNWAY</span><span id="hud-time-display" class="text-[#E6E6E6] font-bold">-- hrs</span></div>
-                </div>
-
-                <div class="flex-1 border border-[#1A1A1A] bg-[#0F0F0F] rounded-[2px] p-4 space-y-2.5 overflow-hidden">
-                    <div class="text-[10px] text-[#E6E6E6] uppercase tracking-wider font-bold">LOCAL PROFILE DATABANK</div>
-                    <div id="hud-profile-dump" class="space-y-1.5 text-[10px] leading-relaxed text-[#737373]"></div>
-                </div>
-            </aside>
-        </div>
+    <div id="input-container">
+        <textarea id="user-input" placeholder="Enter execution prompt..."></textarea>
+        <button id="send-btn">RUN</button>
     </div>
 
     <script>
-        const userProfile = { targetObjective: '', primarySkill: '', dailyHours: '', primaryBottleneck: '', pwAffiliation: '' };
-        let currentStage = 1;
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
 
-        const stagesConfig = {
-            1: { title: "1. TARGET MONETIZATION OBJECTIVE", question: "What is your primary commercial objective inside this high-velocity run?", options: ["Earn 1 Lakh/Month Solo Freelancing", "Build High-Tier Earning System for PW", "Scale Digital Agency Infrastructure"], field: "targetObjective" },
-            2: { title: "2. MONETIZABLE SKILL ASSET GRID", question: "Identify your strongest leverage skill vector capable of generating cash:", options: ["High-End Video Editing & Freelance", "Full-Stack Software Architecture", "Growth Hacking Pipelines", "No Skill Profile Yet (Need Core Training)"], field: "primarySkill" },
-            3: { title: "3. TEMPORAL RUNWAY CAPACITY", question: "How many hours per day can you allocate purely to executing these wealth loops?", options: ["1-3 Hours (Restricted)", "4-6 Hours (High Velocity)", "7+ Hours (Absolute Immersion)"], field: "dailyHours" },
-            4: { title: "4. THE PRIMARY DESTRUCTION BOTTLENECK", question: "What is the massive friction node holding back your earning capability?", options: ["Lack of High-Ticket Client Acquisition Framework", "Technical Execution Complexity", "Severe Disorganization & Attention Splitting"], field: "primaryBottleneck" },
-            5: { title: "5. ECOSYSTEM PLUG STATUS", question: "Are you plugged into an existing massive student network like PW loops?", options: ["Yes - Deeply Rooted in PW Platform Communities", "Yes - Independent Freelance Networks", "No - Starting from Absolute Ghost State"], field: "pwAffiliation" }
+        // Cloudflare Worker Live API Endpoint
+        const API_URL = 'https://kshatriya-ai-bridge.solankipriyam71.workers.dev';
+
+        // Static Execution Profile Matrix Context
+        const userContext = {
+            profile: "Kshatriya Elite",
+            focus: ["High-Ticket Freelance", "Premium Video Editing Pipelines", "Mass Scale PW Distribution Loops"],
+            rules: "Zero corporate fluff. Absolute tactical blueprints only."
         };
 
-        const onboardingGate = document.getElementById('onboarding-gate');
-        const dashboardCore = document.getElementById('dashboard-core');
-        const questionContainer = document.getElementById('question-container');
-        const stageCounter = document.getElementById('stage-counter');
-        const progressBar = document.getElementById('progress-bar');
-        const nextStageBtn = document.getElementById('next-stage-btn');
-
-        function loadStage(stageNum) {
-            const config = stagesConfig[stageNum];
-            stageCounter.innerText = `STAGE ${stageNum} / 5`;
-            progressBar.style.width = `${stageNum * 20}%`;
-            let htmlContent = `<div class="text-[11px] mono text-[#FFAB00] font-bold tracking-wider">${config.title}</div><p class="text-[13px] text-[#E6E6E6] leading-relaxed">${config.question}</p><div class="space-y-2.5 pt-2">`;
-            config.options.forEach((opt, idx) => {
-                htmlContent += `<label class="flex items-center space-x-3 p-3.5 border border-[#1A1A1A] bg-[#050505] rounded-[2px] cursor-pointer hover:border-[#737373] text-[12px]"><input type="radio" name="stage-input" value="${opt}" class="accent-[#FFAB00] h-3.5 w-3.5" ${idx === 0 ? 'checked' : ''}><span class="text-[#E6E6E6]">${opt}</span></label>`;
-            });
-            htmlContent += `</div>`;
-            questionContainer.innerHTML = htmlContent;
+        function appendMessage(text, isUser) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            msgDiv.innerHTML = text;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        nextStageBtn.addEventListener('click', () => {
-            const selectedOption = document.querySelector('input[name="stage-input"]:checked');
-            if (!selectedOption) return;
-            userProfile[stagesConfig[currentStage].field] = selectedOption.value;
-            if (currentStage < 5) { currentStage++; loadStage(currentStage); } else { initializeDashboard(); }
+        async function triggerExecution() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, true);
+            userInput.value = '';
+            userInput.style.height = '48px';
+            
+            sendBtn.disabled = true;
+            
+            // Temporary typing notification
+            const loaderDiv = document.createElement('div');
+            loaderDiv.className = 'message ai-message';
+            loaderDiv.innerText = '[COMPUTING PIPELINE...]';
+            chatContainer.appendChild(loaderDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: text, context: userContext })
+                });
+
+                const data = await response.json();
+                loaderDiv.remove();
+
+                if (data.reply) {
+                    // Convert basic markdown asterisks to html bold tags safely
+                    let formattedReply = data.reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    appendMessage(formattedReply, false);
+                } else if (data.error) {
+                    appendMessage(`[CORE ERROR]: ${data.error}`, false);
+                } else {
+                    appendMessage('[UNEXPECTED RESPONSE STRUCT ERROR]', false);
+                }
+            } catch (err) {
+                loaderDiv.remove();
+                appendMessage(`[NETWORK CORE FAILURE]: ${err.message}`, false);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        sendBtn.addEventListener('click', triggerExecution);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                triggerExecution();
+            }
         });
-
-        function initializeDashboard() {
-            onboardingGate.classList.add('hidden-layer');
-            dashboardCore.classList.remove('hidden-layer');
-            document.getElementById('hud-skill-display').innerText = userProfile.primarySkill.split(' ')[0].toUpperCase();
-            document.getElementById('hud-time-display').innerText = userProfile.dailyHours.split(' ')[0];
-            document.getElementById('hud-earning-index').innerText = userProfile.targetObjective.includes('1 Lakh') ? '1,00,000 INR/MO' : 'PW SYSTEM ENGINE';
-            document.getElementById('hud-profile-dump').innerHTML = `<div class="text-[#E6E6E6] font-bold">[MATRIX CONFIG DATA]</div><div>> GOAL: ${userProfile.targetObjective}</div><div>> CORE_SKILL: ${userProfile.primarySkill}</div><div>> ENGINE_RUNWAY: ${userProfile.dailyHours}</div>`;
-            document.getElementById('welcome-message-text').innerText = `Kshatriya Operational Intelligence System initialized. User target: [${userProfile.targetObjective}]. Main asset focus: [${userProfile.primarySkill}]. System locked. Standing by for upstream AI logic activation.`;
-        }
-
-        loadStage(1);
     </script>
 </body>
 </html>
-
