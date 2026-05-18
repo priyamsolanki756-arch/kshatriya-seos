@@ -1,257 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSHATRIYA SEOS // TERMINAL</title>
-    <style>
-        :root {
-            --bg-main: #060608;
-            --bg-panel: #0b0c10;
-            --accent-glow: #6366f1;
-            --accent-border: #1e1b4b;
-            --text-core: #e2e8f0;
-            --text-muted: #64748b;
-        }
+// KSHATRIYA SEOS // CORE V3.0 - FRONTEND INTERFACE
+const WORKER_URL = "https://kshatriya-ai-bridge.solankipriyam71.workers.dev";
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', Courier, monospace;
-        }
+async function sendMessage() {
+    const inputField = document.getElementById("user-input");
+    const chatContainer = document.getElementById("chat-container");
+    
+    if (!inputField || !inputField.value.trim()) return;
+    
+    const userPrompt = inputField.value.trim();
+    
+    // Append User Message to UI
+    appendMessage("User", userPrompt);
+    inputField.value = ""; // Clear input
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-core);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Premium Header Accent */
-        header {
-            background: linear-gradient(180deg, #0f111a 0%, #060608 100%);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #1e293b;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
-            position: relative;
-        }
-
-        header h1 {
-            font-size: 1.4rem;
-            letter-spacing: 5px;
-            color: var(--text-core);
-            text-transform: uppercase;
-            font-weight: 900;
-            text-shadow: 0 0 15px rgba(226, 232, 240, 0.2);
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
-        }
-
-        /* Chat Arena Grid */
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background-image: 
-                linear-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(15, 23, 42, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: #07070a;
-        }
-
-        /* Message Geometry */
-        .message {
-            max-width: 80%;
-            padding: 16px 20px;
-            border-radius: 4px;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            white-space: pre-wrap;
-            position: relative;
-            animation: glitchIn 0.25s ease-out;
-        }
-
-        .user-message {
-            background-color: #0f1016;
-            color: #ffffff;
-            align-self: flex-end;
-            border-left: 3px solid var(--accent-glow);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.05);
-        }
-
-        .ai-message {
-            background-color: #0b0c10;
-            color: #cbd5e1;
-            align-self: flex-start;
-            border-left: 3px solid #334155;
-            border: 1px solid #1e293b;
-        }
-
-        .ai-message strong {
-            color: #5ff4a4;
-            font-weight: 700;
-        }
-
-        /* Execution Control Dock */
-        #input-container {
-            background-color: #090a0f;
-            padding: 20px;
-            border-top: 1px solid #1e293b;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        textarea {
-            flex: 1;
-            background-color: #040406;
-            border: 1px solid #1e293b;
-            border-radius: 4px;
-            padding: 15px;
-            color: #fff;
-            resize: none;
-            height: 54px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        textarea:focus {
-            border-color: var(--accent-glow);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-        }
-
-        button {
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 4px;
-            height: 54px;
-            width: 100px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--accent-glow);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
-
-        button:disabled {
-            background: #1e293b;
-            color: var(--text-muted);
-            cursor: not-allowed;
-        }
-
-        @keyframes glitchIn {
-            from { opacity: 0; transform: scale(0.99); }
-            to { opacity: 1; transform: scale(1); }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>[ KSHATRIYA SEOS // CORE v3.0 ]</h1>
-    </header>
-
-    <div id="chat-container">
-        <div class="message ai-message"><strong>[SYSTEM ACTIVE]</strong> Pipeline clear. Awaiting high-value tactical execution inputs.</div>
-    </div>
-
-    <div id="input-container">
-        <textarea id="user-input" placeholder="// ENTER STRATEGY COMMAND..."></textarea>
-        <button id="send-btn">EXEC</button>
-    </div>
-
-    <script>
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-
-        // Cloudflare Active Bridge Route
-        const API_URL = 'https://kshatriya-ai-bridge.solankipriyam71.workers.dev';
-
-        const systemContext = {
-            matrix: "Elite Blueprint Generation",
-            archetypes: ["Sukuna", "Shelby", "Musk"],
-            demographic: "High-Tier Monetization Network"
-        };
-
-        function appendMessage(text, isUser) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
-            msgDiv.innerHTML = text;
-            chatContainer.appendChild(msgDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        async function triggerExecution() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            appendMessage(`> ${text}`, true);
-            userInput.value = '';
-            sendBtn.disabled = true;
-            
-            const loader = document.createElement('div');
-            loader.className = 'message ai-message';
-            loader.innerText = '[PROCESSING ENGINE PARSING...]';
-            chatContainer.appendChild(loader);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text, context: systemContext })
-                });
-
-                const data = await response.json();
-                loader.remove();
-
-                if (data.reply) {
-                    let formatted = data.reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    appendMessage(formatted, false);
-                } else if (data.error) {
-                    appendMessage(`<strong>[ENGINE REJECTION]</strong>: ${data.error}<br><br><em>Check if GEMINI_API_KEY is properly saved in Cloudflare -> Settings -> Variables.</em>`, false);
-                } else {
-                    appendMessage('<strong>[EXCEPTION]</strong>: Empty Token Stream.', false);
-                }
-            } catch (err) {
-                loader.remove();
-                appendMessage(`<strong>[NETWORK EXCEPTION]</strong>: Server refused request payload. Check CORS or URL endpoint.`, false);
-            } finally {
-                sendBtn.disabled = false;
-            }
-        }
-
-        sendBtn.addEventListener('click', triggerExecution);
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                triggerExecution();
-            }
+    try {
+        // Core Network Execution
+        const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt: userPrompt })
         });
-    </script>
-</body>
-</html>
+
+        if (!response.ok) {
+            throw new Error(`Network alert: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Output Parsing & Verification
+        if (data && data.reply) {
+            appendMessage("Core", data.reply);
+        } else {
+            appendMessage("Core", "Error: Frame empty or invalid response format.");
+        }
+
+    } catch (error) {
+        console.error("Pipeline Breakdown:", error);
+        appendMessage("Core", `System Error: ${error.message}`);
+    }
+}
+
+// UI Rendering Engine
+function appendMessage(sender, text) {
+    const chatContainer = document.getElementById("chat-container");
+    if (!chatContainer) return;
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = sender === "User" ? "user-msg-block" : "core-msg-block";
+    
+    // Handles direct HTML injection for error tracking/formatting
+    messageDiv.innerHTML = `<strong>> ${sender}:</strong> <br>${text}`;
+    
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
+}
+
+// Event Binding for Execution
+document.getElementById("exec-btn")?.addEventListener("click", sendMessage);
+document.getElementById("user-input")?.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+});
