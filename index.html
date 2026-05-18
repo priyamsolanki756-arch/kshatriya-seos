@@ -1,64 +1,159 @@
-// KSHATRIYA SEOS // CORE V3.0 - FRONTEND INTERFACE
-const WORKER_URL = "https://kshatriya-ai-bridge.solankipriyam71.workers.dev";
-
-async function sendMessage() {
-    const inputField = document.getElementById("user-input");
-    const chatContainer = document.getElementById("chat-container");
-    
-    if (!inputField || !inputField.value.trim()) return;
-    
-    const userPrompt = inputField.value.trim();
-    
-    // Append User Message to UI
-    appendMessage("User", userPrompt);
-    inputField.value = ""; // Clear input
-
-    try {
-        // Core Network Execution
-        const response = await fetch(WORKER_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ prompt: userPrompt })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Network alert: ${response.status}`);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSHATRIYA SEOS // CORE V3.0</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #161b22;
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h2 {
+            text-align: center;
+            color: #58a6ff;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        #chat-container {
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid #30363d;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #0d1117;
+            border-radius: 4px;
+        }
+        .user-msg-block {
+            color: #58a6ff;
+            margin-bottom: 12px;
+            border-left: 3px solid #58a6ff;
+            padding-left: 8px;
+        }
+        .core-msg-block {
+            color: #7ee787;
+            margin-bottom: 12px;
+            border-left: 3px solid #7ee787;
+            padding-left: 8px;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        button {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #2ea043;
+        }
+    </style>
+</head>
+<body>
 
-        const data = await response.json();
+<div class="container">
+    <h2>[ KSHATRIYA SEOS // CORE V3.0 ]</h2>
+    <p style="color: #8b949e; font-size: 14px; text-align: center;">Pipeline clear. Awaiting high-value tactical execution inputs.</p>
+    
+    <div id="chat-container"></div>
+    
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="// ENTER STRATEGY..." autocomplete="off">
+        <button id="exec-btn">EXEC</button>
+    </div>
+</div>
+
+<script>
+    // CORE CONNECTION URL
+    const WORKER_URL = "https://kshatriya-ai-bridge.solankipriyam71.workers.dev";
+
+    async function sendMessage() {
+        const inputField = document.getElementById("user-input");
+        const chatContainer = document.getElementById("chat-container");
         
-        // Output Parsing & Verification
-        if (data && data.reply) {
-            appendMessage("Core", data.reply);
-        } else {
-            appendMessage("Core", "Error: Frame empty or invalid response format.");
+        if (!inputField || !inputField.value.trim()) return;
+        
+        const userPrompt = inputField.value.trim();
+        
+        // Render User Message
+        appendMessage("User", userPrompt);
+        inputField.value = ""; 
+
+        try {
+            // Trigger Cloudflare Pipeline
+            const response = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: userPrompt })
+            });
+
+            const data = await response.json();
+            
+            if (data && data.reply) {
+                appendMessage("Core", data.reply);
+            } else {
+                appendMessage("Core", `[ENGINE REJECTION]: Invalid data stream. <br><pre style="color:#ff4a4a;">${JSON.stringify(data)}</pre>`);
+            }
+
+        } catch (error) {
+            appendMessage("Core", `System Error: ${error.message}`);
         }
-
-    } catch (error) {
-        console.error("Pipeline Breakdown:", error);
-        appendMessage("Core", `System Error: ${error.message}`);
     }
-}
 
-// UI Rendering Engine
-function appendMessage(sender, text) {
-    const chatContainer = document.getElementById("chat-container");
-    if (!chatContainer) return;
+    function appendMessage(sender, text) {
+        const chatContainer = document.getElementById("chat-container");
+        if (!chatContainer) return;
 
-    const messageDiv = document.createElement("div");
-    messageDiv.className = sender === "User" ? "user-msg-block" : "core-msg-block";
-    
-    // Handles direct HTML injection for error tracking/formatting
-    messageDiv.innerHTML = `<strong>> ${sender}:</strong> <br>${text}`;
-    
-    chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
-}
+        const messageDiv = document.createElement("div");
+        messageDiv.className = sender === "User" ? "user-msg-block" : "core-msg-block";
+        messageDiv.innerHTML = `<strong>> ${sender}:</strong><br>${text}`;
+        
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-// Event Binding for Execution
-document.getElementById("exec-btn")?.addEventListener("click", sendMessage);
-document.getElementById("user-input")?.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendMessage();
-});
+    document.getElementById("exec-btn").addEventListener("click", sendMessage);
+    document.getElementById("user-input").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+</script>
+
+</body>
+</html>
